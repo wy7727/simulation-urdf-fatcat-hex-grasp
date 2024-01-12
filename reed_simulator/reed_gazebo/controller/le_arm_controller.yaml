@@ -1,0 +1,23 @@
+le_arm_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+     - shoulder_pan_joint 
+     - shoulder_lift_joint
+  gazebo_ros_control: 
+    pid_gains:
+      shoulder_pan_joint: 
+        p : 0.0
+        i : 0.01
+        d : 0.0
+      shoulder_lift_joint: 
+        p : 0.0
+        i : 0.01
+        d : 0.0
+  constraints:
+      goal_time: 10
+      stopped_velocity_tolerance: 0.05
+      shoulder_pan_joint: {trajectory: 1.5708, goal: 1.5708}
+      shoulder_lift_joint: {trajectory: 0.0, goal: 0.0}
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10

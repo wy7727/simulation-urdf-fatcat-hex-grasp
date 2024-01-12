@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+
+<robot name="iris" xmlns:xacro="http://ros.org/wiki/xacro">
+  <!-- Properties that can be assigned at build time as arguments.
+  Is there a reason not to make all properties arguments?
+  -->
+  <xacro:arg name='name' default='iris_0' />
+  <xacro:arg name='mavlink_addr' default='INADDR_ANY' />
+  <xacro:arg name='mavlink_udp_port' default='14560' />
+  <xacro:arg name='mavlink_tcp_port' default='4560' />
+  <xacro:arg name='serial_enabled' default='false' />
+  <xacro:arg name='serial_device' default='/dev/ttyACM0' />
+  <xacro:arg name='baudrate' default='921600' />
+  <xacro:arg name='qgc_addr' default='INADDR_ANY' />
+  <xacro:arg name='qgc_udp_port' default='14550' />
+  <xacro:arg name='sdk_addr' default='INADDR_ANY' />
+  <xacro:arg name='sdk_udp_port' default='14540' />
+  <xacro:arg name='hil_mode' default='false' />
+  <xacro:arg name='hil_state_level' default='false' />
+  <xacro:arg name='send_vision_estimation' default='false' />
+  <xacro:arg name='send_odometry' default='false' />
+  <xacro:arg name='enable_lockstep' default='true' />
+  <xacro:arg name='use_tcp' default='true' />
+  <xacro:arg name='vehicle_is_tailsitter' default='false' />
+  <xacro:arg name='visual_material' default='DarkGrey' />
+  <xacro:arg name='enable_mavlink_interface' default='true' />
+  <xacro:arg name='enable_wind' default='false' />
+  <!-- The following causes segfault with multiple vehicles if defaults to true!!! -->
+  <xacro:arg name='enable_ground_truth' default='false' />
+  <xacro:arg name='enable_cameras' default='true' />
+  <xacro:arg name='enable_depth' default='true' />
+  <xacro:arg name='enable_logging' default='false' />
+  <xacro:arg name='log_file' default='iris' />
+
+  <!-- macros for gazebo plugins, sensors -->
+  <xacro:include filename="$(find wy_qua_arm)/urdf/component_snippets.xacro" />
+  <!-- Instantiate iris "mechanics" -->
+  <xacro:include filename="$(find le_arm)/urdf/iris.xacro" />
+
+  <gazebo>
+      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+          <robotNamespace>/</robotNamespace>
+      </plugin>
+  </gazebo>
+  <!-- Instantiate arm "mechanics" -->
+  <!-- <xacro:include filename="$(find le_arm)/urdf/le_arm.urdf.xacro" />
+  <xacro:le_arm parent="base_link" >
+    <origin xyz="-0.1 0 -0.05" rpy="0 3.14 3.14"/>
+  </xacro:le_arm> -->
+
+  <xacro:if value="$(arg enable_wind)">
+    <xacro:wind_plugin_macro
+        namespace="${namespace}"
+        wind_direction="0 0 1"
+        wind_force_mean="0.7"
+        xyz_offset="1 0 0"
+        wind_gust_direction="0 0 0"
+        wind_gust_duration="0"
+        wind_gust_start="0"
+        wind_gust_force_mean="0"
+        />
+  </xacro:if>
+
+
+  <!-- Instantiate gps plugin. 
+  <xacro:gps_plugin_macro
+    namespace="${namespace}"
+    gps_noise="true"
+    >
+  </xacro:gps_plugin_macro> -->
+
+  <!-- Instantiate magnetometer plugin. 
+  <xacro:magnetometer_plugin_macro
+    namespace="${namespace}"
+    pub_rate="20"
+    noise_density="0.0004"
+    random_walk="0.0000064"
+    bias_correlation_time="600"
+    mag_topic="/mag"
+    >
+  </xacro:magnetometer_plugin_macro> -->
+
+  <!-- Instantiate barometer plugin. 
+  <xacro:barometer_plugin_macro
+    namespace="${namespace}"
+    pub_rate="10"
+    baro_topic="/baro"
+    >
+  </xacro:barometer_plugin_macro> -->
+
+  <xacro:if value="$(arg enable_mavlink_interface)">
+  <!-- Instantiate mavlink telemetry interface. -->
+  <xacro:default_mavlink_interface namespace="${namespace}" imu_sub_topic="imu" rotor_count="6" />
+  </xacro:if>
+
+  <!-- Mount an ADIS16448 IMU. -->
+  <xacro:default_imu namespace="${namespace}" parent_link="${namespace}/base_link" />
+
+  <xacro:if value="$(arg enable_ground_truth)">
+    <!-- Mount an IMU providing ground truth. -->
+    <xacro:ground_truth_imu_and_odometry namespace="${namespace}" parent_link="${namespace}/base_link" />
+  </xacro:if>
+
+  <xacro:if value="$(arg enable_logging)">
+    <!-- Instantiate a logger -->
+    <xacro:bag_plugin_macro
+      namespace="${namespace}"
+      bag_file="$(arg log_file)"
+      rotor_velocity_slowdown_sim="${rotor_velocity_slowdown_sim}"
+    >
+    </xacro:bag_plugin_macro>
+  </xacro:if>
+
+  <!-- Instantiate a VI sensor. -->
+  <!-- <xacro:vi_sensor_macro namespace="$(arg name)" parent_link="base_link">
+  <origin xyz="0.2 0.0 0.0" rpy="0.0 0.0 0.0" />
+  </xacro:vi_sensor_macro> 
+
+  <xacro:include filename="$(find le_arm)/urdf/sensors/camera.urdf.xacro"/> -->
+
+</robot>

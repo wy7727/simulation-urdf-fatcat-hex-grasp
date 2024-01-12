@@ -1,0 +1,36 @@
+<launch>
+<!-- Launch Gazebo -->
+<!-- rosparam set /physics/max_step_size 0.001 -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find arm_gazebo)/worlds/empty.world"/>
+        <arg name="paused" value="false"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="true"/>
+        <arg name="recording" value="false"/>
+        <arg name="debug" value="false"/>
+    </include>
+
+    <!-- Generate/Load robot description file -->
+    <include file="$(find arm_description)/launch/description.launch"/>
+
+    <!-- Spawn urdf into Gazebo -->
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-x 0.0 -z 1.3 -P 1.57 -param robot_description -urdf -model arm" />
+
+  <!-- Load joints controllers configurations -->
+  <!-- <rosparam file="$(find arm_control)/config/fall_cat_control.yaml" command="load"/> -->
+
+  <!-- Load the controllers -->
+  <rosparam file="$(find arm_control)/config/joint_state_controller.yaml" command="load"/>
+  <node name="joint_state_controller_spawner" pkg="controller_manager" type="spawner" args="joint_state_controller" />
+<rosparam file="$(find arm_control)/config/le_arm_controller.yaml" command="load"/> 
+    
+<node name="le_arm_controller_spawner" pkg="controller_manager" type="spawner" args="arm_controller  " />
+
+  <!-- <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="
+        joint_state_controller
+        arm_controller armposi_controller"/> -->
+
+  <!-- convert joint states to TF transforms for rviz, etc -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
+
+</launch>

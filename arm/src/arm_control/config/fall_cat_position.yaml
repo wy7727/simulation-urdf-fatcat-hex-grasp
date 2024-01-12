@@ -1,0 +1,55 @@
+gazebo_ros_control: 
+    pid_gains:
+      link1y_link2x_joint: 
+        p : 0.0
+        i : 0.0
+        d : 0.0
+      link2x_link2y_joint: 
+        p : 0.0
+        i : 0.0
+        d : 0.0
+      link2y_link3x_joint: 
+        p : 0.0
+        i : 0.0
+        d : 0.0
+      link3x_link3y_joint: 
+        p : 0.0
+        i : 0.0
+        d : 0.0
+      link3y_link4x_joint: 
+        p : 50.0
+        i : 0.0
+        d : 0.0
+      link4x_link4y_joint: 
+        p : 50.0
+        i : 0.0
+        d : 0.0
+      link4y_link5x_joint: 
+        p : 0.0
+        i : 0.0
+        d : 0.0
+      link5x_link5y_joint: 
+        p : 0.0
+        i : 0.0
+        d : 0.0
+armposi_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+     - link1y_link2x_joint 
+     - link2x_link2y_joint
+     - link2y_link3x_joint 
+     - link3x_link3y_joint
+     - link3y_link4x_joint 
+     - link4x_link4y_joint
+  constraints:
+      goal_time: 0.6
+      stopped_velocity_tolerance: 0.05
+      link1y_link2x_joint: {trajectory: 0.1, goal: 0.1}
+      link2x_link2y_joint: {trajectory: 0.1, goal: 0.1}
+      link2y_link3x_joint: {trajectory: 0.1, goal: 0.1}
+      link3x_link3y_joint: {trajectory: 0.1, goal: 0.1}
+      link3y_link4x_joint: {trajectory: 0.1, goal: 0.1}
+      link4x_link4y_joint: {trajectory: 0.1, goal: 0.1}
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10

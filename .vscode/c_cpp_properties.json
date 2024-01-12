@@ -1,0 +1,29 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/wuy/wy_ws/devel/include/**",
+        "/home/wuy/catkin_ws/devel/include/**",
+        "/opt/ros/melodic/include/**",
+        "/home/wuy/wy_ws/src/learncommunication/include/**",
+        "/home/wuy/catkin_ws/src/linear_mpc/include/**",
+        "/home/wuy/catkin_ws/src/reed_simulator/reed_control/include/**",
+        "/home/wuy/catkin_ws/src/rotors_control/include/**",
+        "/home/wuy/catkin_ws/src/rotors_gazebo_plugins/include/**",
+        "/home/wuy/catkin_ws/src/rotors_hil_interface/include/**",
+        "/home/wuy/catkin_ws/src/rotors_joy_interface/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
